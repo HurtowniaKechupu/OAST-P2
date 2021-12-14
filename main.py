@@ -31,17 +31,12 @@ while True:
         break
     else:
         print("Zły plik! Wybierz ponownie.")
-exit(0)
 
-'''
-try:
-    INITIAL_POPULATION = int(input("Określ populację początkową (int): "))
-except:
-    INITIAL_POPULATION = INITIAL_POPULATION
-print(INITIAL_POPULATION)
+
+INITIAL_POPULATION = int(input("Określ populację początkową (int): "))
 try:
     CROSSOVER_PROBABILITY = float(input("Określ prawdopodobieństwo krzyżowania (float): "))
-except:
+except ValueError:
     CROSSOVER_PROBABILITY = CROSSOVER_PROBABILITY
 try:
     MUTATION_PROBABILITY = float(input("Określ prawdopodobieństwo mutacji (float): "))
@@ -51,4 +46,3 @@ try:
     SEED = int(input("Określ ziarno dla generatora liczb pseudolosowych (int): "))
 except:
     SEED = SEED
-'''
