@@ -17,9 +17,9 @@ mutations = 0
 not_improved_iteration = 0
 
 # UI
+option = 0
 while True:
-    option = input("Wybierz plik: 1. net4.txt  2. net12_1.txt  3. net12_2.txt: ")
-    print(option)
+    option = input('Wybierz plik: 1. net4.txt  2. net12_1.txt  3. net12_2.txt: ')
     if option == "1":
         file = "./Dane/net4.txt"
         break
@@ -33,13 +33,13 @@ while True:
         print("Zły plik! Wybierz ponownie.")
 exit(0)
 
-dupa = input()
-INITIAL_POPULATION = int(dupa)
-
-#except:
-#    INITIAL_POPULATION = INITIAL_POPULATION
+'''
+try:
+    INITIAL_POPULATION = int(input("Określ populację początkową (int): "))
+except:
+    INITIAL_POPULATION = INITIAL_POPULATION
 print(INITIAL_POPULATION)
-'''try:
+try:
     CROSSOVER_PROBABILITY = float(input("Określ prawdopodobieństwo krzyżowania (float): "))
 except:
     CROSSOVER_PROBABILITY = CROSSOVER_PROBABILITY
