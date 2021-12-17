@@ -58,8 +58,8 @@ class Network:
             link.number_of_signals = 0
             link.number_of_fibers = 0
             for demand in self.demands:
-                for path in demand.demand_path_list:
-                    if link.link_id in path.link_list and path.solution_path_signal_count != 0:
+                for path in demand.list_of_demand_paths:
+                    if link in path.links and path.solution_path_signal_count != 0:
                         link.number_of_signals = link.number_of_signals + 1
                         link.number_of_fibers = math.ceil(link.number_of_signals / link.single_module_capacity)
 
