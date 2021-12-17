@@ -1,31 +1,32 @@
 import classes as cl
 import evolution as evo
+import bruteforce as bf
 import time
 import random
 
 def check_if_stop():
     if stop_criterium == "1":
-        return duration < MAX_TIME
+        return duration < max_time
     elif stop_criterium == "2":
-        return iteration < MAX_GENERATIONS
+        return iteration < max_generations
     elif stop_criterium == "3":
-        return mutations < MAX_MUTATIONS
+        return mutations < max_mutations
     elif stop_criterium == "4":
-        return not_improved_iteration < MAX_NOT_IMPROVED
+        return not_improved_iteration < max_not_improved
     else:
         return False
 
 
 # Default variables
-MAX_TIME = 200
-MAX_GENERATIONS = 250
-MAX_MUTATIONS = 500
-MAX_NOT_IMPROVED = 10
+max_time = 200
+max_generations = 250
+max_mutations = 500
+max_not_improved = 10
 
-INITIAL_POPULATION = 100
-CROSSOVER_PROBABILITY = 0.65
-MUTATION_PROBABILITY = 0.15
-SEED = 2137
+initial_population = 100
+crossover_probability = 0.65
+mutation_probability = 0.15
+seed = 2137
 
 duration = 0
 iteration = 0
@@ -48,65 +49,8 @@ while True:
     else:
         print("Nieprawidłowy plik! Wybierz ponownie.")
 
-try:
-    INITIAL_POPULATION = int(input("\nPopulacja początkowa (int): "))
-except ValueError:
-    print(f"Nieprawidłowa wartość! Wczytano domyślną: {INITIAL_POPULATION}")
-    INITIAL_POPULATION = INITIAL_POPULATION
-try:
-    CROSSOVER_PROBABILITY = float(input("Prawdopodobieństwo krzyżowania (float): "))
-except ValueError:
-    print(f"Nieprawidłowa wartość! Wczytano domyślną: {CROSSOVER_PROBABILITY}")
-    CROSSOVER_PROBABILITY = CROSSOVER_PROBABILITY
-try:
-    MUTATION_PROBABILITY = float(input("Prawdopodobieństwo mutacji (float): "))
-except ValueError:
-    print(f"Nieprawidłowa wartość! Wczytano domyślną: {MUTATION_PROBABILITY}")
-    MUTATION_PROBABILITY = MUTATION_PROBABILITY
-try:
-    SEED = int(input("Ziarno dla generatora liczb pseudolosowych (int): "))
-except ValueError:
-    print(f"Nieprawidłowa wartość! Wczytano domyślną: {SEED} \n")
-    SEED = SEED
-
-
-while True:
-    stop_criterium = input(
-        "Wybierz kryterium stopu: \n1. Czas\n2. Liczba generacji\n3. Liczba mutacji\n4. Brak poprawy najlepszego rozwiązania w kolejnych N iteracjach:  ")
-    if stop_criterium == "1":
-        try:
-            MAX_TIME = int(input("Liczba sekund: "))
-        except ValueError:
-            print(f"Nieprawidłowa wartość! Wczytano domyślną: {MAX_TIME} \n")
-            MAX_TIME = MAX_TIME
-        break
-    elif stop_criterium == "2":
-        try:
-            MAX_GENERATIONS = int(input("Liczba generacji: "))
-        except ValueError:
-            print(f"Nieprawidłowa wartość! Wczytano domyślną: {MAX_GENERATIONS} \n")
-            MAX_GENERATIONS = MAX_GENERATIONS
-        break
-    elif stop_criterium == "3":
-        try:
-            MAX_MUTATIONS = int(input("Liczba mutacji: "))
-        except ValueError:
-            print(f"Nieprawidłowa wartość! Wczytano domyślną: {MAX_MUTATIONS} \n")
-            MAX_MUTATIONS = MAX_MUTATIONS
-        break
-    elif stop_criterium == "4":
-        try:
-            MAX_NOT_IMPROVED = int(input("Liczba iteracji: "))
-        except ValueError:
-            print(f"Nieprawidłowa wartość! Wczytano domyślną: {MAX_NOT_IMPROVED} \n")
-            MAX_NOT_IMPROVED = MAX_NOT_IMPROVED
-        break
-    else:
-        print("Błędne kryterium stopu! Wybierz ponownie.")
-
 
 network = cl.Network()
-
 #parser
 with open(file, "r") as f:
     number_of_links = int(f.readline())
@@ -137,54 +81,128 @@ with open(file, "r") as f:
         demand.print_demand(number_of_demand_paths)
         f.readline()
 
-#start
-random.seed(SEED)
-first_population = evo.gen_first_population(network.demands, INITIAL_POPULATION)
-current_population = first_population
-evo.calc_fitness(network.links, network.demands, current_population)
-for chromosome in first_population:
-    for gene in chromosome.list_of_genes:
-        print(gene.list_of_a)
-    print("Funkcja kosztu DAP:" + str(chromosome.fitness_dap))
-    print("Funkcja kosztu DDAP:" + str(chromosome.fitness_ddap))
 
-#początek algorytmu
-counter = 1
-best_dap = chromosome.fitness_dap
-best_ddap = chromosome.fitness_ddap
-while check_if_stop():
-    start = time.time()
-    old_ddap = current_population[0].fitness_ddap
-    old_dap = current_population[0].fitness_dap
-    new_population = evo.do_cross(current_population, CROSSOVER_PROBABILITY)
+mode = 0
+while True:
+    mode = input("\nWybierz algorytm:\n1. Brute Force \n2. Algorytm Ewolucyjny")
+    if mode == "1":
+        break
+    elif mode == "2":
+        break
+    else:
+        print(f"Nieprawidłowa wartość! Wczytano domyślnie algorytm Brute Force")
 
-    for chromosome in new_population:
-        if evo.do_mutation(chromosome, MUTATION_PROBABILITY):
-            mutations += 1
+if mode == "1":
+    print("Brute Force")
 
-    print("\n----> Generacja nr", counter)
-    counter += 1
-    x, y = evo.calc_fitness(network.links, network.demands, new_population)
-    if x < best_dap:
-        best_dap = x
-    if y < best_ddap:
-        best_ddap = y
+elif mode == "2":
+    try:
+        initial_population = int(input("\nPopulacja początkowa (int): "))
+    except ValueError:
+        print(f"Nieprawidłowa wartość! Wczytano domyślną: {initial_population}")
+        initial_population = initial_population
+    try:
+        crossover_probability = float(input("Prawdopodobieństwo krzyżowania (float): "))
+    except ValueError:
+        print(f"Nieprawidłowa wartość! Wczytano domyślną: {crossover_probability}")
+        crossover_probability = crossover_probability
+    try:
+        mutation_probability = float(input("Prawdopodobieństwo mutacji (float): "))
+    except ValueError:
+        print(f"Nieprawidłowa wartość! Wczytano domyślną: {mutation_probability}")
+        mutation_probability = mutation_probability
+    try:
+        seed = int(input("Ziarno dla generatora liczb pseudolosowych (int): "))
+    except ValueError:
+        print(f"Nieprawidłowa wartość! Wczytano domyślną: {seed} \n")
+        seed = seed
 
-    new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)
 
-    if old_ddap >= new_population[1].fitness_ddap and old_dap >= new_population[1].fitness_dap:
-        not_improved_iteration += 1
+    while True:
+        stop_criterium = input(
+            "Wybierz kryterium stopu: \n1. Czas\n2. Liczba generacji\n3. Liczba mutacji\n4. Brak poprawy najlepszego rozwiązania w kolejnych N iteracjach:  ")
+        if stop_criterium == "1":
+            try:
+                max_time = int(input("Liczba sekund: "))
+            except ValueError:
+                print(f"Nieprawidłowa wartość! Wczytano domyślną: {max_time} \n")
+                max_time = max_time
+            break
+        elif stop_criterium == "2":
+            try:
+                max_generations = int(input("Liczba generacji: "))
+            except ValueError:
+                print(f"Nieprawidłowa wartość! Wczytano domyślną: {max_generations} \n")
+                max_generations = max_generations
+            break
+        elif stop_criterium == "3":
+            try:
+                max_mutations = int(input("Liczba mutacji: "))
+            except ValueError:
+                print(f"Nieprawidłowa wartość! Wczytano domyślną: {max_mutations} \n")
+                max_mutations = max_mutations
+            break
+        elif stop_criterium == "4":
+            try:
+                max_not_improved = int(input("Liczba iteracji: "))
+            except ValueError:
+                print(f"Nieprawidłowa wartość! Wczytano domyślną: {max_not_improved} \n")
+                max_not_improved = max_not_improved
+            break
+        else:
+            print("Błędne kryterium stopu! Wybierz ponownie.")
 
-    sliced_population = new_population[:INITIAL_POPULATION]
-    current_population = sliced_population
-    end = time.time()
-    iteration += 1
-    duration += end - start
 
-# Koniec algorytmu (wypisanie wartości końcowych)
-print("\n----------------------------------------------")
-print("Liczba generacji: " + str(iteration))
-print("Liczba mutacji: " + str(mutations))
-print("Czas działania: " + str(duration))
-print("\nNajlepsza funkcja kosztu DAP:", best_dap)
-print("Najlepsza funkcja kosztu DDAP:", best_ddap)
+
+
+    #start
+    random.seed(seed)
+    first_population = evo.gen_first_population(network.demands, initial_population)
+    current_population = first_population
+    evo.calc_fitness(network.links, network.demands, current_population)
+    for chromosome in first_population:
+        for gene in chromosome.list_of_genes:
+            print(gene.list_of_a)
+        print("Funkcja kosztu DAP:" + str(chromosome.fitness_dap))
+        print("Funkcja kosztu DDAP:" + str(chromosome.fitness_ddap))
+
+    #początek algorytmu
+    counter = 1
+    best_dap = chromosome.fitness_dap
+    best_ddap = chromosome.fitness_ddap
+    while check_if_stop():
+        start = time.time()
+        old_ddap = current_population[0].fitness_ddap
+        old_dap = current_population[0].fitness_dap
+        new_population = evo.do_cross(current_population, crossover_probability)
+
+        for chromosome in new_population:
+            if evo.do_mutation(chromosome, mutation_probability):
+                mutations += 1
+
+        print("\n----> Generacja nr", counter)
+        counter += 1
+        x, y = evo.calc_fitness(network.links, network.demands, new_population)
+        if x < best_dap:
+            best_dap = x
+        if y < best_ddap:
+            best_ddap = y
+
+        new_population.sort(key=lambda x: x.fitness_ddap, reverse=False)
+
+        if old_ddap >= new_population[1].fitness_ddap and old_dap >= new_population[1].fitness_dap:
+            not_improved_iteration += 1
+
+        sliced_population = new_population[:initial_population]
+        current_population = sliced_population
+        end = time.time()
+        iteration += 1
+        duration += end - start
+
+    # Koniec algorytmu (wypisanie wartości końcowych)
+    print("\n----------------------------------------------")
+    print("Liczba generacji: " + str(iteration))
+    print("Liczba mutacji: " + str(mutations))
+    print("Czas działania: " + str(duration))
+    print("\nNajlepsza funkcja kosztu DAP:", best_dap)
+    print("Najlepsza funkcja kosztu DDAP:", best_ddap)
