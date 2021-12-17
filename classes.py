@@ -1,5 +1,6 @@
 import sys
 import itertools
+import math
 
 class Link:
     def __init__(self, start_node, end_node, number_of_modules, module_cost, link_module):
@@ -8,6 +9,8 @@ class Link:
         self.number_of_modules = number_of_modules
         self.module_cost = module_cost
         self.link_module = link_module
+
+        #todo zrobić zeby działało
 
     def print_link(self):
         print("Start node: {}, End node: {}, Number of modules: {}, Module cost: {}, Link module: {}"
@@ -46,9 +49,19 @@ class Network:
     def __init__(self):
         self.links = []
         self.demands = []
-        #todo zrobić by to działało:
-        max((len(l.demand_path_list), i) for i, l in enumerate(demands_list))[0]
+        #to możę powodować problemy:
+        self.longest_demand_path = []
+            #max((len(self.demands.list_of_demand_paths), i) for i, l in enumerate(self.demands))[0]
 
+    def update_link_capacity(self):
+        for link in self.links:
+            link.number_of_signals = 0
+            link.number_of_fibers = 0
+            for demand in self.demands:
+                for path in demand.demand_path_list:
+                    if link.link_id in path.link_list and path.solution_path_signal_count != 0:
+                        link.number_of_signals = link.number_of_signals + 1
+                        link.number_of_fibers = math.ceil(link.number_of_signals / link.single_module_capacity)
 
 class Gene:
     def __init__(self, list_of_a, demand_volume):
@@ -62,7 +75,9 @@ class Chromosome:
         self.dap_fitness = dap_fitness
         self.ddap_fitness = ddap_fitness
 
+
 #nwm czy to będzie git
+#todo ogarnąć to
 
 class PathIteration(object):
 

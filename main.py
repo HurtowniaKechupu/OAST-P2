@@ -80,7 +80,8 @@ with open(file, "r") as f:
         network.demands.append(demand)
         demand.print_demand(number_of_demand_paths)
         f.readline()
-
+        #to może powodować problemy:
+        network.longest_demand_path = max((len(demand.list_of_demand_paths), i) for i, l in enumerate(network.demands))[0]
 
 mode = 0
 while True:
