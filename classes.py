@@ -1,3 +1,6 @@
+import sys
+import itertools
+
 class Link:
     def __init__(self, start_node, end_node, number_of_modules, module_cost, link_module):
         self.start_node = start_node
@@ -43,6 +46,8 @@ class Network:
     def __init__(self):
         self.links = []
         self.demands = []
+        #todo zrobić by to działało:
+        max((len(l.demand_path_list), i) for i, l in enumerate(demands_list))[0]
 
 
 class Gene:
@@ -56,3 +61,130 @@ class Chromosome:
         self.list_of_genes = list_of_genes
         self.dap_fitness = dap_fitness
         self.ddap_fitness = ddap_fitness
+
+#nwm czy to będzie git
+
+class PathIteration(object):
+
+    def find_combinations_util(self, arr, index, buckets, num,
+                               reduced_num, output):
+
+        # Base condition
+        if reduced_num < 0:
+            return
+
+        # If combination is
+        # found, print it
+        if reduced_num == 0:
+            curr_array = [0] * buckets
+            curr_array[:index] = arr[:index]
+            all_perm = list(itertools.permutations(curr_array))
+            for solution in set(all_perm):
+                output.append(solution)
+            return
+
+            # Find the previous number stored in arr[].
+        # It helps in maintaining increasing order
+        prev = 1 if (index == 0) else arr[index - 1]
+
+        # note loop starts from previous
+        # number i.e. at array location
+        # index - 1
+        for k in range(prev, num + 1):
+            # Found combination would take too many buckets
+            if index >= buckets:
+                return
+            # next element of array is k
+            arr[index] = k
+
+            # call recursively with
+            # reduced number
+            self.find_combinations_util(arr, index + 1, buckets, num,
+                                        reduced_num - k, output)
+
+            # Function to find out all
+
+    # combinations of positive numbers
+    # that add upto given number.
+    # It uses findCombinationsUtil()
+    def find_combinations(self, n, buckets):
+
+        output = []
+        # array to store the combinations
+        # It can contain max n elements
+        arr = [0] * buckets
+
+        # find all combinations
+        self.find_combinations_util(arr, 0, buckets, n, n, output)
+        return output
+
+
+class Possibilities(object):
+    def __init__(self, network: Network):
+        self.possibilities = []
+        for demand in network.demands:
+            path_iter = PathIteration()
+            iter_for_demand = path_iter.find_combinations(demand.demand_volume, demand.number_of_demand_paths)
+            for id, perm in enumerate(iter_for_demand):
+                # Fill with -1 if any path is shorter than the longest
+                if len(perm) < network.longest_demand_path:
+                    new_tuple = perm + tuple([0] * (network.longest_demand_path - len(perm)))
+                    iter_for_demand[id] = new_tuple
+            self.possibilities.append(iter_for_demand)
+
+        self.number_of_demands = len(self.possibilities)
+        self.longest_route = network.longest_demand_path
+
+    def __getitem__(self, y):
+        return self.possibilities[y]
+
+
+class Iteration(object):
+
+    def __init__(self, possibilities: Possibilities):
+        self.possibilities = possibilities
+        self.values = []
+        self.state = [0] * self.possibilities.number_of_demands
+        for i in range(0, self.possibilities.number_of_demands):
+            self.values.append([0] * self.possibilities.longest_route)
+
+    def next_iteration(self, modules_used: str):
+        for i in reversed(range(0, self.possibilities.number_of_demands)):
+            # Very important '- 1' here
+            if self.state[i] < len(self.possibilities[i]) - 1:
+                self.state[i] = self.state[i] + 1
+                self.set_values()
+                return True
+            elif self.state[i - 1] < len(self.possibilities[i - 1]) - 1:
+                self.state[i - 1] = self.state[i - 1] + 1
+                self.state[i:] = [0] * (self.possibilities.number_of_demands - i)
+                if i == 1:
+                    self.update_progress(self.state[0] / len(self.possibilities[0]), modules_used)
+                self.set_values()
+                return True
+        return False
+
+    def set_values(self):
+        for i in range(0, self.possibilities.number_of_demands):
+            self.values[i] = self.possibilities[i][self.state[i]]
+
+    # Displays or updates a console progress bar
+    def update_progress(self, progress, modules: str):
+        bar_length = 100
+        status = ""
+        if isinstance(progress, int):
+            progress = float(progress)
+        if not isinstance(progress, float):
+            progress = 0
+            status = "error: progress var must be float\r\n"
+        if progress < 0:
+            progress = 0
+            status = "Halt...\r\n"
+        if progress >= 1:
+            progress = 1
+            status = "Done...\r\n"
+        block = int(round(bar_length * progress))
+        text = "\rModules used: [{3}].. Percent: [{0}] {1}% {2}".format("#" * block + "-" * (bar_length - block),
+                                                                        progress * 100, status, modules)
+        sys.stdout.write(text)
+        sys.stdout.flush()
