@@ -94,6 +94,11 @@ while True:
 
 if mode == "1":
     print("Brute Force")
+    #DAP:
+    liczba_xow = 0
+    for demand in network.demands:
+        liczba_xow = liczba_xow + demand.number_of_demand_paths
+
 
 elif mode == "2":
     try:
