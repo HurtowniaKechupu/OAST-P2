@@ -4,50 +4,68 @@ import time
 import classes as cl
 
 
-#todo nic tu nie działa
+# todo nic tu nie działa
 
-def brute_solve(network: cl.Network) -> cl.Network:
+def brute_solve_ddap(network: cl.Network) -> cl.Network:
     start = time.time()
-    print("Bruteforce started!")
-
-    # Get all possible permutations of paths
-    possibilities = cl.Possibilities(network)
-
+    possibilities = cl.Possibilities(network)   # Get all possible permutations of paths
     iteration = cl.Iteration(possibilities)
-    print(str(len(iteration.values)) + "; " + str(iteration.values))
+    #print(str(len(iteration.values)) + "; " + str(iteration.values))  #pokazuje wektory rozwiązania
     best_solution = Solution(math.inf, [])
-
-    iteration.update_progress(0, 'infinity')
+    iteration.update_progress(0, 'nieskończoność')
     # For every permutation calculate load on links and how many modules are needed to accommodate this load
     # Select best solution - can be multiple ones
     while iteration.next_iteration(str(best_solution.cost)):
-    # iteration.next_iteration(str(best_solution.cost))
         competing_solution = calculate_modules_cost(network, iteration.values)
         best_solution = best_solution.compare(competing_solution)
 
     iteration.update_progress(1, str(best_solution.cost))
     end = time.time()
-
-    print()
-    print("Number of possible solutions is {}:".format(len(best_solution.values)))
+    print("\nLiczba możliwych rozwiązań: {}:".format(len(best_solution.values)))
     for solveNumber in range(len(best_solution.values)):
         best_solution.print(network, solveNumber)
-
-    print("Calculations took: {}".format(end - start))
+    print("Obliczenia zajęły: {}".format(end - start))
 
     for demand in range(len(best_solution.values[0])):
         for path in range(len(best_solution.values[0][0])):
             try:
-                network.demands[demand].list_of_demand_paths[path].solution_path_signal_count = best_solution.values[0][demand][path]
+                network.demands[demand].list_of_demand_paths[path].solution_path_signal_count = \
+                best_solution.values[0][demand][path]
             except IndexError:
-                # Should be only printed in debug
-                print("IndexError number of paths for demand {} is shorter then max {}".format(demand, network.longest_demand_path))
-
+                print()
+                #print("IndexError number of paths for demand {} is shorter then max {}".format(demand,network.longest_demand_path))
     network.update_link_capacity()
-    '''for link in network.links:
-        #todo to chyba ważne jest ale sprawdzam czy się uruchimi
-        link.print_result()
-        print("dupa")'''
+    return network
+
+#todo zrobić tu dapa
+def brute_solve_dap(network: cl.Network) -> cl.Network:
+    start = time.time()
+    possibilities = cl.Possibilities(network)   # Get all possible permutations of paths
+    iteration = cl.Iteration(possibilities)
+    #print(str(len(iteration.values)) + "; " + str(iteration.values))  #pokazuje wektory rozwiązania
+    best_solution = Solution(math.inf, [])
+    iteration.update_progress(0, 'inf')
+    # For every permutation calculate load on links and how many modules are needed to accommodate this load
+    # Select best solution - can be multiple ones
+    while iteration.next_iteration(str(best_solution.cost)):
+        competing_solution = calculate_modules_cost(network, iteration.values)
+        best_solution = best_solution.compare(competing_solution)
+
+    iteration.update_progress(1, str(best_solution.cost))
+    end = time.time()
+    print("\nLiczba możliwych rozwiązań: {}:".format(len(best_solution.values)))
+    for solveNumber in range(len(best_solution.values)):
+        best_solution.print(network, solveNumber)
+    print("Obliczenia zajęły: {}".format(end - start))
+
+    for demand in range(len(best_solution.values[0])):
+        for path in range(len(best_solution.values[0][0])):
+            try:
+                network.demands[demand].list_of_demand_paths[path].solution_path_signal_count = \
+                best_solution.values[0][demand][path]
+            except IndexError:
+                print()
+    network.update_link_capacity()
     return network
 
 
@@ -81,8 +99,8 @@ class Solution(object):
             print(row_format.format(path_list[path_id], *row))
         print(row_format.format("h(d):",
                                 *[network.demands[x].demand_volume for x in range(len(network.demands))]))
-        print("Solution cost: {}".format(self.cost))
-        print("Is solution valid: {}".format(self.validate(network, solve_number)))
+        print("Koszt rozwiązania: {}".format(self.cost))
+        print("Czy rowiązanie poprawne: {}".format(self.validate(network, solve_number)))
         print()
 
     def validate(self, network: cl.Network, solve_number: int):

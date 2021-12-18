@@ -99,7 +99,7 @@ if mode == "1":
     #liczba_xow = 0
     #for demand in network.demands:
         #liczba_xow = liczba_xow + demand.number_of_demand_paths
-    bf.brute_solve(network)
+    bf.brute_solve_ddap(network)
 
 elif mode == "2":
     try:

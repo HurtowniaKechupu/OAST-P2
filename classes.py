@@ -190,24 +190,24 @@ class Iteration(object):
 
     # Displays or updates a console progress bar
     def update_progress(self, progress, modules: str):
-        bar_length = 100
+        #bar_length = 100
         status = ""
         if isinstance(progress, int):
             progress = float(progress)
         if not isinstance(progress, float):
             progress = 0
-            status = "error: progress var must be float\r\n"
+            status = "błąd: \r\n"
         if progress < 0:
             progress = 0
-            status = "Halt...\r\n"
+            status = "Stop...\r\n"
         if progress >= 1:
             progress = 1
-            status = "Done.\r\n"
-        block = int(round(bar_length * progress))
+            status = "Zakończono.\r\n"
+        #block = int(round(bar_length * progress))
         #text = "\rModules used: [{3}].. Percent: [{0}] {1}% {2}".format("#" * block + "-" * (bar_length - block),
         #                                                                progress * 100, status, modules)
         # uproszczone
-        text = "\rModules used: [{2}], Percent: {0}% {1}".format(progress * 100, status, modules)
+        text = "\rWykorzystane moduły: [{2}], Postęp: {0}% {1}".format(progress * 100, status, modules)
 
         sys.stdout.write(text)
         sys.stdout.flush()
