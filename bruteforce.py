@@ -102,15 +102,10 @@ def calculate_links_load(network, flow_array):
                 load[linkInPath - 1] = load[linkInPath - 1] + flows_running_this_path
     return load
 
-
-
-#___________________________________________________________________________Bałagan
-#todo zrobić tu dapa
-
 def brute_solve_dap(network: cl.Network) -> cl.Network:
     start = time.time()
     possibilities = cl.Possibilities(network)   # Get all possible permutations of paths
-    iteration = cl.DAPIteration(possibilities)
+    iteration = cl.Iteration(possibilities)
     #print(str(len(iteration.values)) + "; " + str(iteration.values))  #pokazuje wektory rozwiązania
     best_solution = DAPSolution(math.inf, [])
     iteration.update_progress(0, 'inf')

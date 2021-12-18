@@ -10,8 +10,6 @@ class Link:
         self.module_cost = module_cost
         self.link_module = link_module
 
-        #todo zrobić zeby działało
-
     def print_link(self):
         print("Start node: {}, End node: {}, Number of modules: {}, Module cost: {}, Link module: {}"
               .format(self.start_node, self.end_node, self.number_of_modules, self.module_cost, self.link_module))
@@ -81,9 +79,6 @@ class Chromosome:
         self.ddap_fitness = ddap_fitness
 
 
-#nwm czy to będzie git
-#todo ogarnąć to
-
 class PathIteration(object):
 
     def find_combinations_util(self, arr, index, buckets, num,
@@ -128,12 +123,10 @@ class PathIteration(object):
     # that add upto given number.
     # It uses findCombinationsUtil()
     def find_combinations(self, n, buckets):
-
         output = []
         # array to store the combinations
         # It can contain max n elements
         arr = [0] * buckets
-
         # find all combinations
         self.find_combinations_util(arr, 0, buckets, n, n, output)
         return output
@@ -160,61 +153,6 @@ class Possibilities(object):
 
 
 class Iteration(object):
-
-    def __init__(self, possibilities: Possibilities):
-        self.possibilities = possibilities
-        self.values = []
-        self.state = [0] * self.possibilities.number_of_demands
-        for i in range(0, self.possibilities.number_of_demands):
-            self.values.append([0] * self.possibilities.longest_route)
-
-    def next_iteration(self, modules_used: str):
-        for i in reversed(range(0, self.possibilities.number_of_demands)):
-            # Very important '- 1' here
-            if self.state[i] < len(self.possibilities[i]) - 1:
-                self.state[i] = self.state[i] + 1
-                self.set_values()
-                return True
-            elif self.state[i - 1] < len(self.possibilities[i - 1]) - 1:
-                self.state[i - 1] = self.state[i - 1] + 1
-                self.state[i:] = [0] * (self.possibilities.number_of_demands - i)
-                if i == 1:
-                    self.update_progress(self.state[0] / len(self.possibilities[0]), modules_used)
-                self.set_values()
-                return True
-        return False
-
-    def set_values(self):
-        for i in range(0, self.possibilities.number_of_demands):
-            self.values[i] = self.possibilities[i][self.state[i]]
-
-    # Displays or updates a console progress bar
-    def update_progress(self, progress, modules: str):
-        #bar_length = 100
-        status = ""
-        if isinstance(progress, int):
-            progress = float(progress)
-        if not isinstance(progress, float):
-            progress = 0
-            status = "błąd: \r\n"
-        if progress < 0:
-            progress = 0
-            status = "Stop...\r\n"
-        if progress >= 1:
-            progress = 1
-            status = "Zakończono.\r\n"
-        #block = int(round(bar_length * progress))
-        #text = "\rModules used: [{3}].. Percent: [{0}] {1}% {2}".format("#" * block + "-" * (bar_length - block),
-        #                                                                progress * 100, status, modules)
-        # uproszczone
-        text = "\rWykorzystane moduły: [{2}], Postęp: {0}% {1}".format(progress * 100, status, modules)
-
-        sys.stdout.write(text)
-        sys.stdout.flush()
-
-
-
-class DAPIteration(object):
 
     def __init__(self, possibilities: Possibilities):
         self.possibilities = possibilities
