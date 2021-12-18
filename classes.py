@@ -16,6 +16,11 @@ class Link:
         print("Start node: {}, End node: {}, Number of modules: {}, Module cost: {}, Link module: {}"
               .format(self.start_node, self.end_node, self.number_of_modules, self.module_cost, self.link_module))
 
+    '''def print_result(self):
+        print(f'\tLink idx: {self.link_id}')
+        for attr in ('start_node', 'end_node', 'number_of_signals'):
+            print(f'\t\t{attr} = {getattr(self, attr)}')
+        print(f'\t\tnumber_of_fibers = {self.number_of_fibers} x {self.single_module_capacity} Mbps')'''
 
 class Demand:
     def __init__(self, demand_data, demand_number):
@@ -59,7 +64,7 @@ class Network:
             link.number_of_fibers = 0
             for demand in self.demands:
                 for path in demand.list_of_demand_paths:
-                    if link in path.links and path.solution_path_signal_count != 0:
+                    if link in path.links_in_path and path.solution_path_signal_count != 0:
                         link.number_of_signals = link.number_of_signals + 1
                         link.number_of_fibers = math.ceil(link.number_of_signals / link.single_module_capacity)
 

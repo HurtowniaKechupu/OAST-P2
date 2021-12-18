@@ -44,8 +44,10 @@ def brute_solve(network: cl.Network) -> cl.Network:
                 print("IndexError number of paths for demand {} is shorter then max {}".format(demand, network.longest_demand_path))
 
     network.update_link_capacity()
-    for link in network.links:
+    '''for link in network.links:
+        #todo to chyba ważne jest ale sprawdzam czy się uruchimi
         link.print_result()
+        print("dupa")'''
     return network
 
 
