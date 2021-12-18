@@ -202,9 +202,12 @@ class Iteration(object):
             status = "Halt...\r\n"
         if progress >= 1:
             progress = 1
-            status = "Done...\r\n"
+            status = "Done.\r\n"
         block = int(round(bar_length * progress))
-        text = "\rModules used: [{3}].. Percent: [{0}] {1}% {2}".format("#" * block + "-" * (bar_length - block),
-                                                                        progress * 100, status, modules)
+        #text = "\rModules used: [{3}].. Percent: [{0}] {1}% {2}".format("#" * block + "-" * (bar_length - block),
+        #                                                                progress * 100, status, modules)
+        # uproszczone
+        text = "\rModules used: [{2}], Percent: {0}% {1}".format(progress * 100, status, modules)
+
         sys.stdout.write(text)
         sys.stdout.flush()
