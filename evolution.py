@@ -139,7 +139,7 @@ def gen_chromosome(list_of_dem):
         dem_to_assign = dem_vol
 
         while dem_to_assign > 0:
-            # Wybiera w sposób lodowy, który "allel" będzie inkrementowany
+            # Wybiera w sposób losowy, który "allel" będzie inkrementowany
             al_to_increment = random.randint(0, num_demands - 1)
             # Inkrementacja "alleli"
             list_of_all[al_to_increment] += 1
