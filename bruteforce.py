@@ -106,7 +106,7 @@ def brute_solve_dap(network: cl.Network) -> cl.Network:
     possibilities = cl.Possibilities(network)   # Get all possible permutations of paths
     iteration = cl.Iteration(possibilities)
     #print(str(len(iteration.values)) + "; " + str(iteration.values))  #pokazuje wektory rozwiązania
-    best_solution = DAPSolution(math.inf, [])
+    best_solution = Solution(math.inf, [])
     iteration.update_progress(0, 'inf')
     # For every permutation calculate load on links and how many modules are needed to accommodate this load
     # Select best solution - can be multiple ones
@@ -132,54 +132,11 @@ def brute_solve_dap(network: cl.Network) -> cl.Network:
     return network
 
 
-class DAPSolution(object):
-    def __init__(self, cost: float, values: []):
-        self.cost = cost
-        self.values = values
-
-    def compare(self, other):
-        if other.cost < self.cost:
-            return other
-        elif other.cost == self.cost:
-            self.append(other.values[0])
-            return self
-        else:
-            return self
-
-    def append(self, new_solution: []):
-        self.values.append(new_solution)
-
-    def print(self, network: cl.Network, solve_number: int):
-
-        row_format = "{:<7}" + "{:^5}" * len(network.demands)
-        demand_list = ["[%s]" % x for x in range(1, len(network.demands) + 1)]
-        path_list = ["[%s]" % x for x in range(1, network.longest_demand_path + 1)]
-        transposed_data = zip(*self.values[solve_number])
-
-        print('Routes: \\ Demands:')
-        print(row_format.format("", *demand_list))
-        for path_id, row in enumerate(transposed_data):
-            print(row_format.format(path_list[path_id], *row))
-        print(row_format.format("h(d):",
-                                *[network.demands[x].demand_volume for x in range(len(network.demands))]))
-        print("Koszt rozwiązania: {}".format(self.cost))
-        print("Czy rowiązanie poprawne: {}".format(self.validate(network, solve_number)))
-        print()
-
-    def validate(self, network: cl.Network, solve_number: int):
-        valid = True
-        for demand in range(len(self.values[solve_number])):
-            demand_passed = sum(self.values[solve_number][demand])
-            valid = valid and (demand_passed >= network.demands[demand].demand_volume)
-
-        return valid
-
-def calculate_dap_cost(network, flow_array) -> DAPSolution:
-    #print(flow_array)
+def calculate_dap_cost(network, flow_array) -> Solution:
     cost = 0
     load = calculate_links_load(network, flow_array)
     f = [0 for i in range(len(load))] #przeciążenie DAP
     for e in range(len(load)):
         f[e] = load[e] - int(network.links[e].number_of_modules) * int(network.links[e].link_module)
     cost = max(f)
-    return DAPSolution(cost, [copy.deepcopy(flow_array)])
+    return Solution(cost, [copy.deepcopy(flow_array)])
