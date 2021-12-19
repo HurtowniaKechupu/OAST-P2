@@ -174,7 +174,7 @@ elif mode == "2":
         print("Funkcja kosztu DAP:" + str(chromosome.fitness_dap))
         print("Funkcja kosztu DDAP:" + str(chromosome.fitness_ddap))
 
-    # początek algorytmu
+    # początek algorytmu evo
     counter = 1
     best_dap = chromosome.fitness_dap
     best_ddap = chromosome.fitness_ddap

@@ -20,8 +20,8 @@ def calc_fitness(links, demands, population):
         for e in range(len(links)):
             y[e] = ceil(l[e] / int(links[e].link_module))
             f[e] = l[e] - int(links[e].number_of_modules) * int(links[e].link_module)
-            chromosome.fitness_ddap += y[e] * int(links[e].module_cost)
-        chromosome.fitness_dap = max(f)
+            chromosome.fitness_ddap += y[e] * int(links[e].module_cost) #oblicza dap fitness
+        chromosome.fitness_dap = max(f) #oblicza ddap fitness
     print("Rozmiary łączy: ", y)
     print("Obciążenia łączy: ", l)
     print("Funkcja kosztu DAP: ", chromosome.fitness_dap)
@@ -45,7 +45,6 @@ def gen_first_population(list_of_demands, pop_size_int):
     # Wygenerowanie liczby chromosomow jak rozmiar polulacji
     for i in range(0, pop_size_int):
         first_pop_list.append(gen_chromosome(list_of_demands))
-
     print("\nPopulacja początkowa:")
     return first_pop_list
 
@@ -60,23 +59,17 @@ def do_mutation(chromosome, m_prob):
         m_prob = 0.7
 
     for gene in chromosome.list_of_genes:
-
         if random.random() < m_prob:
-
             num_of_a = len(gene.list_of_a)
-
             # Losowo wybrane dwie generacje
             first_gen_val_swap = random.randint(0, num_of_a - 1)
             sec_gen_val_swap = random.randint(0, num_of_a - 1)
 
-
             while gene.list_of_a[first_gen_val_swap] <= 0:
                 first_gen_val_swap = random.randint(0, num_of_a - 1)
 
-
             while sec_gen_val_swap == first_gen_val_swap:
                 sec_gen_val_swap = random.randint(0, num_of_a - 1)
-
             gene.list_of_a[first_gen_val_swap] -= 1
             gene.list_of_a[sec_gen_val_swap] += 1
             return True
@@ -99,17 +92,17 @@ def do_cross(list_of_chrom, cross_prob):
     list_off += list_of_chrom
 
     while len(list_of_chrom) >= 2:
-        # Tpobiera rodziców z listy
+        # Pobiera rodziców z listy
         first_parent_genes = list_of_chrom.pop(0).list_of_genes
         second_parent_genes = list_of_chrom.pop(0).list_of_genes
 
-        # Określa czy dochodzi do krzyżowanie dla każdej pary rodziców
+        # Określa czy dochodzi do krzyżowanie dla pary rodziców
         if random.random() < cross_prob:
 
             first_off_gen = list()
             second_off_gen = list()
 
-            # Wykreowanie potomstwa
+            # Tworzenie potomstwa
             for i in range(0, len(first_parent_genes)):
                 # Decide which gene is taken from which parent
                 if random.random() < 0.5:
@@ -122,7 +115,7 @@ def do_cross(list_of_chrom, cross_prob):
                     first_off_gen.append(second_parent_genes[i])
                     second_off_gen.append(first_parent_genes[i])
 
-            # Dodanie do listy potomstwa
+            # Dodanie potomstwa do listy
             list_off.append(cl.Chromosome(first_off_gen, 0, 0))
             list_off.append(cl.Chromosome(second_off_gen, 0, 0))
 
@@ -141,11 +134,10 @@ def gen_chromosome(list_of_dem):
         dem_to_assign = dem_vol
 
         while dem_to_assign > 0:
-            # Wybiera w sposób losowy, który "allel" będzie inkrementowany
+            # Wybiera w sposób losowy allel do inkrementacji
             al_to_increment = random.randint(0, num_demands - 1)
-            # Inkrementacja "alleli"
+            # Inkrementacja alleli
             list_of_all[al_to_increment] += 1
-            # dekrementacja
             dem_to_assign -= 1
 
         # Dodanie generacji do chromosomu

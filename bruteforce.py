@@ -6,13 +6,11 @@ import classes as cl
 
 def brute_solve_ddap(network: cl.Network) -> cl.Network:
     start = time.time()
-    possibilities = cl.Possibilities(network)   # Get all possible permutations of paths
+    possibilities = cl.Possibilities(network)   # wszystkie permutacje rozwiązań
     iteration = cl.Iteration(possibilities)
     #print(str(len(iteration.values)) + "; " + str(iteration.values))  #pokazuje wektory rozwiązania
     best_solution = Solution(math.inf, [])
-    iteration.update_progress(0, 'nieskończoność')
-    # For every permutation calculate load on links and how many modules are needed to accommodate this load
-    # Select best solution - can be multiple ones
+    iteration.update_progress(0, 'inf')
     while iteration.next_iteration(str(best_solution.cost)):
         competing_solution = calculate_modules_cost(network, iteration.values)
         best_solution = best_solution.compare(competing_solution)
@@ -31,7 +29,6 @@ def brute_solve_ddap(network: cl.Network) -> cl.Network:
                 best_solution.values[0][demand][path]
             except IndexError:
                 print()
-                #print("IndexError number of paths for demand {} is shorter then max {}".format(demand,network.longest_demand_path))
     network.update_link_capacity()
     return network
 
@@ -60,7 +57,7 @@ class Solution(object):
         path_list = ["[%s]" % x for x in range(1, network.longest_demand_path + 1)]
         transposed_data = zip(*self.values[solve_number])
 
-        print('Routes: \\ Demands:')
+        print('p: \\ d:')
         print(row_format.format("", *demand_list))
         for path_id, row in enumerate(transposed_data):
             print(row_format.format(path_list[path_id], *row))
@@ -103,13 +100,11 @@ def calculate_links_load(network, flow_array):
 
 def brute_solve_dap(network: cl.Network) -> cl.Network:
     start = time.time()
-    possibilities = cl.Possibilities(network)   # Get all possible permutations of paths
+    possibilities = cl.Possibilities(network)
     iteration = cl.Iteration(possibilities)
     #print(str(len(iteration.values)) + "; " + str(iteration.values))  #pokazuje wektory rozwiązania
     best_solution = Solution(math.inf, [])
     iteration.update_progress(0, 'inf')
-    # For every permutation calculate load on links and how many modules are needed to accommodate this load
-    # Select best solution - can be multiple ones
     while iteration.next_iteration(str(best_solution.cost)):
         competing_solution = calculate_dap_cost(network, iteration.values)
         best_solution = best_solution.compare(competing_solution)
@@ -133,7 +128,6 @@ def brute_solve_dap(network: cl.Network) -> cl.Network:
 
 
 def calculate_dap_cost(network, flow_array) -> Solution:
-    cost = 0
     load = calculate_links_load(network, flow_array)
     f = [0 for i in range(len(load))] #przeciążenie DAP
     for e in range(len(load)):

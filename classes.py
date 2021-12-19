@@ -12,14 +12,8 @@ class Link:
         self.link_module = link_module
 
     def print_link(self):
-        print("Start node: {}, End node: {}, Number of modules: {}, Module cost: {}, Link module: {}"
+        print("Start: {}, End: {}, Number of modules: {}, Module cost: {}, Link module: {}"
               .format(self.start_node, self.end_node, self.number_of_modules, self.module_cost, self.link_module))
-
-    '''def print_result(self):
-        print(f'\tLink idx: {self.link_id}')
-        for attr in ('start_node', 'end_node', 'number_of_signals'):
-            print(f'\t\t{attr} = {getattr(self, attr)}')
-        print(f'\t\tnumber_of_fibers = {self.number_of_fibers} x {self.single_module_capacity} Mbps')'''
 
 
 class Demand:
@@ -32,7 +26,7 @@ class Demand:
         self.number_of_demand_paths = len(self.list_of_demand_paths)
 
     def print_demand(self, number_of_demand_paths):
-        print("Start node: {}, End node: {}, Demand volume: {}, Demand number: {}"
+        print("Start: {}, End: {}, Demand: {}, Demand number: {}"
               .format(self.start_node, self.end_node, self.demand_volume, self.demand_number))
         for i in range(0, number_of_demand_paths):
             self.list_of_demand_paths[i].print_demand_path()
@@ -46,7 +40,7 @@ class DemandPath:
         self.links_in_path = [int(link_id) for link_id in demand_path_data[1:]]
 
     def print_demand_path(self):
-        print("Demand path id: {}, Path: {}"
+        print("Demand id: {}, Path: {}"
               .format(self.demand_path_id, self.links_in_path))
 
 
@@ -55,7 +49,6 @@ class Network:
         self.links = []
         self.demands = []
         self.longest_demand_path = []
-            #max((len(self.demands.list_of_demand_paths), i) for i, l in enumerate(self.demands))[0]
 
     def update_link_capacity(self):
         for link in self.links:
@@ -82,16 +75,11 @@ class Chromosome:
 
 
 class PathIteration(object):
-
-    def find_combinations_util(self, arr, index, buckets, num,
-                               reduced_num, output):
-
-        # Base condition
+    def find_combinations_util(self, arr, index, buckets, num, reduced_num, output):
         if reduced_num < 0:
             return
 
-        # If combination is
-        # found, print it
+        # Jeśli znaleziono to print
         if reduced_num == 0:
             curr_array = [0] * buckets
             curr_array[:index] = arr[:index]
@@ -100,36 +88,18 @@ class PathIteration(object):
                 output.append(solution)
             return
 
-            # Find the previous number stored in arr[].
-        # It helps in maintaining increasing order
         prev = 1 if (index == 0) else arr[index - 1]
-
-        # note loop starts from previous
-        # number i.e. at array location
-        # index - 1
         for k in range(prev, num + 1):
-            # Found combination would take too many buckets
             if index >= buckets:
                 return
-            # next element of array is k
             arr[index] = k
 
-            # call recursively with
-            # reduced number
             self.find_combinations_util(arr, index + 1, buckets, num,
                                         reduced_num - k, output)
 
-            # Function to find out all
-
-    # combinations of positive numbers
-    # that add upto given number.
-    # It uses findCombinationsUtil()
     def find_combinations(self, n, buckets):
         output = []
-        # array to store the combinations
-        # It can contain max n elements
         arr = [0] * buckets
-        # find all combinations
         self.find_combinations_util(arr, 0, buckets, n, n, output)
         return output
 
@@ -141,7 +111,6 @@ class Possibilities(object):
             path_iter = PathIteration()
             iter_for_demand = path_iter.find_combinations(demand.demand_volume, demand.number_of_demand_paths)
             for id, perm in enumerate(iter_for_demand):
-                # Fill with -1 if any path is shorter than the longest
                 if len(perm) < network.longest_demand_path:
                     new_tuple = perm + tuple([0] * (network.longest_demand_path - len(perm)))
                     iter_for_demand[id] = new_tuple
@@ -155,7 +124,6 @@ class Possibilities(object):
 
 
 class Iteration(object):
-
     def __init__(self, possibilities: Possibilities):
         self.possibilities = possibilities
         self.values = []
@@ -165,7 +133,6 @@ class Iteration(object):
 
     def next_iteration(self, modules_used: str):
         for i in reversed(range(0, self.possibilities.number_of_demands)):
-            # Very important '- 1' here
             if self.state[i] < len(self.possibilities[i]) - 1:
                 self.state[i] = self.state[i] + 1
                 self.set_values()
@@ -183,9 +150,8 @@ class Iteration(object):
         for i in range(0, self.possibilities.number_of_demands):
             self.values[i] = self.possibilities[i][self.state[i]]
 
-    # Displays or updates a console progress bar
+    # Wyświetla postęp
     def update_progress(self, progress, modules: str):
-        # bar_length = 100
         status = ""
         if isinstance(progress, int):
             progress = float(progress)
@@ -198,10 +164,7 @@ class Iteration(object):
         if progress >= 1:
             progress = 1
             status = "Zakończono.\r\n"
-        #block = int(round(bar_length * progress))
-        #text = "\rModules used: [{3}].. Percent: [{0}] {1}% {2}".format("#" * block + "-" * (bar_length - block),
-        #                                                                progress * 100, status, modules)
-        # uproszczone
+
         text = "\rWykorzystane moduły: [{2}], Postęp: {0}% {1}".format(progress * 100, status, modules)
 
         sys.stdout.write(text)
