@@ -28,6 +28,7 @@ def calc_fitness(links, demands, population):
     print("Funkcja kosztu DDAP: ", chromosome.fitness_ddap)
     return chromosome.fitness_dap, chromosome.fitness_ddap
 
+
 # Sprawdzenie czy połączenie jest wymagane
 def check_demand(link, dem, p):
     path = dem.list_of_demand_paths[p]
@@ -81,6 +82,7 @@ def do_mutation(chromosome, m_prob):
             return True
         else:
             return False
+
 
 # Przeprowadza krzyzowanie, zwraca listę chromosomow i populacji po mutacji
 def do_cross(list_of_chrom, cross_prob):

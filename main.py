@@ -4,6 +4,7 @@ import bruteforce as bf
 import time
 import random
 
+
 def check_if_stop():
     if stop_criterium == "1":
         return duration < max_time
@@ -51,7 +52,7 @@ while True:
 
 
 network = cl.Network()
-#parser
+# parser
 with open(file, "r") as f:
     number_of_links = int(f.readline())
 
@@ -80,7 +81,6 @@ with open(file, "r") as f:
         network.demands.append(demand)
         demand.print_demand(number_of_demand_paths)
         f.readline()
-        #to może powodować problemy:
         network.longest_demand_path = max((len(demand.list_of_demand_paths), i) for i, l in enumerate(network.demands))[0]
 
 mode = 0
@@ -128,10 +128,10 @@ elif mode == "2":
         print(f"Nieprawidłowa wartość! Wczytano domyślną: {seed} \n")
         seed = seed
 
-
     while True:
         stop_criterium = input(
-            "Wybierz kryterium stopu: \n1. Czas\n2. Liczba generacji\n3. Liczba mutacji\n4. Brak poprawy najlepszego rozwiązania w kolejnych N iteracjach:  ")
+            "Wybierz kryterium stopu: \n1. Czas\n2. Liczba generacji\n3. Liczba mutacji\n4. Brak poprawy najlepszego "
+            "rozwiązania w kolejnych N iteracjach:  ")
         if stop_criterium == "1":
             try:
                 max_time = int(input("Liczba sekund: "))
@@ -163,10 +163,7 @@ elif mode == "2":
         else:
             print("Błędne kryterium stopu! Wybierz ponownie.")
 
-
-
-
-    #start
+    # start
     random.seed(seed)
     first_population = evo.gen_first_population(network.demands, initial_population)
     current_population = first_population
@@ -177,7 +174,7 @@ elif mode == "2":
         print("Funkcja kosztu DAP:" + str(chromosome.fitness_dap))
         print("Funkcja kosztu DDAP:" + str(chromosome.fitness_ddap))
 
-    #początek algorytmu
+    # początek algorytmu
     counter = 1
     best_dap = chromosome.fitness_dap
     best_ddap = chromosome.fitness_ddap

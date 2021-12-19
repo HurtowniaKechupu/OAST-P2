@@ -4,8 +4,6 @@ import time
 import classes as cl
 
 
-# todo nic tu nie działa
-
 def brute_solve_ddap(network: cl.Network) -> cl.Network:
     start = time.time()
     possibilities = cl.Possibilities(network)   # Get all possible permutations of paths
@@ -101,6 +99,7 @@ def calculate_links_load(network, flow_array):
             for linkInPath in network.demands[demand].list_of_demand_paths[path].links_in_path:
                 load[linkInPath - 1] = load[linkInPath - 1] + flows_running_this_path
     return load
+
 
 def brute_solve_dap(network: cl.Network) -> cl.Network:
     start = time.time()

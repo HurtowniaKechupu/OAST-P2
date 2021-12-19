@@ -2,6 +2,7 @@ import sys
 import itertools
 import math
 
+
 class Link:
     def __init__(self, start_node, end_node, number_of_modules, module_cost, link_module):
         self.start_node = start_node
@@ -19,6 +20,7 @@ class Link:
         for attr in ('start_node', 'end_node', 'number_of_signals'):
             print(f'\t\t{attr} = {getattr(self, attr)}')
         print(f'\t\tnumber_of_fibers = {self.number_of_fibers} x {self.single_module_capacity} Mbps')'''
+
 
 class Demand:
     def __init__(self, demand_data, demand_number):
@@ -52,7 +54,6 @@ class Network:
     def __init__(self):
         self.links = []
         self.demands = []
-        #to możę powodować problemy:
         self.longest_demand_path = []
             #max((len(self.demands.list_of_demand_paths), i) for i, l in enumerate(self.demands))[0]
 
@@ -65,6 +66,7 @@ class Network:
                     if link in path.links_in_path and path.solution_path_signal_count != 0:
                         link.number_of_signals = link.number_of_signals + 1
                         link.number_of_fibers = math.ceil(link.number_of_signals / link.single_module_capacity)
+
 
 class Gene:
     def __init__(self, list_of_a, demand_volume):
@@ -183,7 +185,7 @@ class Iteration(object):
 
     # Displays or updates a console progress bar
     def update_progress(self, progress, modules: str):
-        #bar_length = 100
+        # bar_length = 100
         status = ""
         if isinstance(progress, int):
             progress = float(progress)
