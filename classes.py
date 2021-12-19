@@ -10,8 +10,6 @@ class Link:
         self.module_cost = module_cost
         self.link_module = link_module
 
-        #todo zrobić zeby działało
-
     def print_link(self):
         print("Start node: {}, End node: {}, Number of modules: {}, Module cost: {}, Link module: {}"
               .format(self.start_node, self.end_node, self.number_of_modules, self.module_cost, self.link_module))
@@ -81,9 +79,6 @@ class Chromosome:
         self.ddap_fitness = ddap_fitness
 
 
-#nwm czy to będzie git
-#todo ogarnąć to
-
 class PathIteration(object):
 
     def find_combinations_util(self, arr, index, buckets, num,
@@ -128,12 +123,10 @@ class PathIteration(object):
     # that add upto given number.
     # It uses findCombinationsUtil()
     def find_combinations(self, n, buckets):
-
         output = []
         # array to store the combinations
         # It can contain max n elements
         arr = [0] * buckets
-
         # find all combinations
         self.find_combinations_util(arr, 0, buckets, n, n, output)
         return output

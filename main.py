@@ -94,12 +94,17 @@ while True:
         print(f"Nieprawidłowa wartość! Wczytano domyślnie algorytm Brute Force")
 
 if mode == "1":
-    #print("Brute Force")
-    #DAP:
-    #liczba_xow = 0
-    #for demand in network.demands:
-        #liczba_xow = liczba_xow + demand.number_of_demand_paths
-    bf.brute_solve_ddap(network)
+    while True:
+        problem = input("\nWybierz problem:\n1. DAP \n2. DDAP")
+        if problem == "1":
+            bf.brute_solve_dap(network)
+            break
+        elif problem == "2":
+            bf.brute_solve_ddap(network)
+            break
+        else:
+            print(f"Nieprawidłowa wartość! Podaj jeszcze raz")
+
 
 elif mode == "2":
     try:
